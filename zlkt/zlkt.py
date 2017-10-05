@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, request
 import config
 from exts import db
 
@@ -12,8 +12,16 @@ db.init_app(app)
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def index():
+    return render_template("index.html")
+
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template("login.html")
+    else:
+        pass
 
 
 if __name__ == '__main__':
