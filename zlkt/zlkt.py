@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, url_for, redirect, session,g
 import config
 from models import User, Question, Comment
 from exts import db
@@ -27,9 +27,11 @@ def login():
     else:
         username = request.form.get('username')
         password = request.form.get('password')
-        user = User.query.filter(User.username == username, User.password == password).first()
-        if user:
+        # user = User.query.filter(User.username == username, User.password == password).first()
+        user = User.query.filter(User.username == username).first()
+        if user and user.check_password(password):
             session['user_id'] = user.id
+            session['user_name'] = user.username
             session.permanent = True
             return redirect(url_for("index"))
         else:
@@ -64,11 +66,14 @@ def register():
 
 @app.context_processor
 def context_processor():
-    user_id = session.get("user_id")
-    if user_id:
-        user = User.query.filter(User.id == user_id).first()
-        if user:
-            return {'user': user}
+    # user_id = session.get("user_id")
+    username = session.get("user_name")
+    # if user_id:
+    if username:
+        return {'user': username}
+        # user = User.query.filter(User.id == user_id).first()
+        # if user:
+        #     return {'user': user}
     else:
         return {}
 
@@ -87,8 +92,8 @@ def question():
     else:
         title = request.form.get('title')
         content = request.form.get('content')
-        user_id = session.get("user_id")
-        user = User.query.filter(User.id == user_id).first()
+        # user_id = session.get("user_id")
+        user = User.query.filter(User.id == g.user.id).first()
         question = Question(title=title, content=content)
         question.author = user
         db.session.add(question)
@@ -120,11 +125,20 @@ def detail(question_id):
 def comment():
     comment = request.form.get('comment')
     question_id = request.form.get('question_id')
-    user_id = session.get("user_id")
-    comment_obj = Comment(comment_content=comment, question_id=question_id, user_id=user_id)
+    # user_id = session.get("user_id")
+    comment_obj = Comment(comment_content=comment, question_id=question_id, user_id=g.user.id)
     db.session.add(comment_obj)
     db.session.commit()
     return redirect(url_for("detail", question_id=question_id))
+
+
+@app.before_request
+def hook_func():
+    user_id = session.get("user_id")
+    if user_id and request.method == 'POST':
+        user = User.query.filter(User.id == user_id).first()
+        if user:
+            g.user = user
 
 
 if __name__ == '__main__':
