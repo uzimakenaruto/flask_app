@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}错误提示{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/error.css') }}">
+<script src="{{ url_for('static',filename='js/error.js') }}"></script>
+{% endblock %}
+{% block body %}
+    <h3 class="page-font">
+{{ message }}
+    </h3>
+
+    <table align="center" width="90%" >
+    <tr align="center">
+        <td> <button id="btn-middle" class="btn btn-primary" >返回</button></td>
+    </tr>
+    </table>
+{% endblock %}

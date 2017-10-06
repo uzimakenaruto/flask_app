@@ -1,0 +1,34 @@
+.page-title{
+    text-align: center;
+}
+.question-info{
+    text-align: center;
+    margin-top: 30px;
+}
+.question-author{
+    margin-right: 20px;
+}
+.question-comment{
+    width: 500px;
+    text-align: right;
+}
+
+ul{
+    list-style: none;
+    padding: 0;
+
+}
+.comment_user{
+    border-bottom: 2px solid #eee;
+    overflow: hidden;
+    padding: 15px 0;
+    text-align: right;
+}
+.com-user{
+    padding-right: 20px;
+}
+.user-photo .avatar{
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
